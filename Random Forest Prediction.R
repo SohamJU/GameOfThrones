@@ -7,10 +7,10 @@ set.seed(123)
 split = sample.split(mydata$Death, SplitRatio = 0.8) 
 training_set = subset(mydata, split == TRUE) 
 test_set = subset(mydata, split == FALSE)
-#K-fold Cross Validation with Random Forest supervised ML technique
+#K-fold Cross Validation with Random Forest supervised ML technique 
 ControlParameter=trainControl(method='cv',number=10)
  logM=train(Death ~ Degree + Closeness.Centrality + Betweenness.Centrality + Eccentricity + Page.Rank + Eigen.Value.Centrality, 
-     data=training_set, method='rf', trControl=ControlParameter)
+     data=training_set, method='glm', trControl=ControlParameter)
 prob=predict(logM,test_set)
 concat1=cbind(test_set,prob)
 concat1
@@ -24,9 +24,9 @@ paraCM=confusionMatrix(cm)
 Accuracy=paraCM$overall[1] #The entry for accuracy by position
 print(Accuracy)
 }
-#Accuracy close to highest for 0.3 as threshold probability
+#Accuracy  highest at 82percent for threshold probability as 0.4
 combprob=predict(logM,mydata)
-y_pred1  = ifelse(combprob>0.3, 1, 0)
+y_pred1  = ifelse(combprob>0.4, 1, 0)
 combine=cbind(mydata,y_pred1)
 a=combine[combine[,9]==1 & combine[9]!=combine[8],] #predicting death which hasn't actually happened yet
 a
@@ -35,3 +35,4 @@ die=a[9]
 listing=cbind(chars,die)
 colnames(listing)[2]='Death'
 listing
+listing[1]
